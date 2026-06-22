@@ -14,12 +14,11 @@ export function useDevice() {
     try {
       const { data } = await client.get('/devices');
       setDevices(data);
-      // Prime liveReading from the embedded latestReading so gauges
-      // show last known values immediately (before socket delivers a live update)
+      // Always sync liveReading from the DB-embedded latestReading so the
+      // Dashboard shows fresh data on every load; socket updates override this.
       const selected = data.find((d) => d.id === useStore.getState().selectedDeviceId);
       if (selected?.latestReading) {
-        const cur = useStore.getState().liveReading;
-        if (!cur) setLiveReading(selected.latestReading);
+        setLiveReading(selected.latestReading);
       }
     } catch (err) {
       console.error('fetchDevices error:', err);

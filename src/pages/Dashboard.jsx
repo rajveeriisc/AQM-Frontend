@@ -17,7 +17,7 @@ const TIME_RANGES = ['1H', '6H', '24H'];
 const RANGE_HOURS = { '1H': 1, '6H': 6, '24H': 24 };
 
 export default function Dashboard() {
-  const liveReading = useStore((s) => s.liveReading);
+  const storedLiveReading = useStore((s) => s.liveReading);
   const readingHistory = useStore((s) => s.readingHistory);
   const devices = useStore((s) => s.devices);
   const isDevicesLoading = useStore((s) => s.isDevicesLoading);
@@ -50,6 +50,8 @@ export default function Dashboard() {
   }, [timeRange, selectedDeviceId]);
 
   const selectedDevice = devices.find((d) => d.id === selectedDeviceId);
+  // Fall back to the DB-embedded latestReading if socket hasn't delivered yet
+  const liveReading = storedLiveReading ?? selectedDevice?.latestReading ?? null;
   const temp = liveReading?.temp;
   const displayTemp = temp != null
     ? tempUnit === 'F'
