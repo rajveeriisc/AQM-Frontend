@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useStore from '../store';
 import client from '../api/client';
+import { destroySocket } from '../hooks/useSocket';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function Settings() {
   }
 
   function handleLogout() {
+    destroySocket();
     clearAuth();
     navigate('/login');
   }

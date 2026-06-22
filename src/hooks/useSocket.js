@@ -5,16 +5,24 @@ import useStore from '../store';
 let socket = null;
 
 export function getSocket() {
+  const token = useStore.getState().token;
   if (!socket) {
     socket = io(import.meta.env.VITE_API_URL || '/', {
       withCredentials: true,
       autoConnect: false,
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,
-      auth: { token: useStore.getState().token },
+      auth: { token },
     });
   }
   return socket;
+}
+
+export function destroySocket() {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
 }
 
 export function useSocket() {
