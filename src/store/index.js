@@ -24,9 +24,10 @@ const useStore = create((set, get) => ({
   selectedDeviceId: localStorage.getItem('selectedDeviceId') || null,
   setDevices: (devices) => {
     set({ devices });
-    // Auto-select first device if none selected
+    // Auto-select first device if none selected OR if stored ID is no longer owned
     const current = get().selectedDeviceId;
-    if (!current && devices.length > 0) {
+    const isValid = current && devices.some((d) => d.id === current);
+    if (!isValid && devices.length > 0) {
       get().selectDevice(devices[0].id);
     }
   },
